@@ -10,6 +10,255 @@
         }
     ],
     "paths": {
+        "/api/v1/admin/country/{id}/city": {
+            "get": {
+                "tags": [
+                    "Cities"
+                ],
+                "summary": "Get list of cities",
+                "description": "Returns list of cities",
+                "operationId": "getCitiesList",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Country id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CityResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Cities"
+                ],
+                "summary": "Store new country",
+                "description": "Returns country data",
+                "operationId": "storeCity",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Country id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CityRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/City"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/v1/admin/country/{countryId}/city/{id}": {
+            "get": {
+                "tags": [
+                    "Cities"
+                ],
+                "summary": "Get country information",
+                "description": "Returns country data",
+                "operationId": "getCityById",
+                "parameters": [
+                    {
+                        "name": "countryId",
+                        "in": "path",
+                        "description": "Country id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "City id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/City"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Cities"
+                ],
+                "summary": "Update existing country",
+                "description": "Returns updated country data",
+                "operationId": "updateCity",
+                "parameters": [
+                    {
+                        "name": "countryId",
+                        "in": "path",
+                        "description": "Country id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "city id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CityRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/City"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Cities"
+                ],
+                "summary": "Delete existing country",
+                "description": "Deletes a record and returns no content",
+                "operationId": "deleteCity",
+                "parameters": [
+                    {
+                        "name": "countryId",
+                        "in": "path",
+                        "description": "Country id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "City id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                }
+            }
+        },
         "/api/v1/admin/country": {
             "get": {
                 "tags": [
@@ -230,6 +479,70 @@
     },
     "components": {
         "schemas": {
+            "City": {
+                "title": "City",
+                "description": "City model",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "name": {
+                        "title": "Name",
+                        "description": "Name of the new city",
+                        "type": "string",
+                        "example": "A nice city"
+                    },
+                    "status": {
+                        "title": "Status",
+                        "description": "Status of the new city",
+                        "type": "string",
+                        "example": "A!I"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "City"
+                }
+            },
+            "CityRequest": {
+                "title": "Store City request",
+                "description": "Store City request body data",
+                "required": [
+                    "name",
+                    "code"
+                ],
+                "properties": {
+                    "name": {
+                        "title": "Name",
+                        "description": "Name of the new city",
+                        "type": "string",
+                        "example": "A nice city"
+                    }
+                },
+                "type": "object"
+            },
+            "CityResource": {
+                "title": "CityResource",
+                "description": "City resource",
+                "properties": {
+                    "data": {
+                        "title": "Data",
+                        "description": "Data wrapper",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/City"
+                        }
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "CityResource"
+                }
+            },
             "Country": {
                 "title": "Country",
                 "description": "Country model",

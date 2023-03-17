@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\CityRequest;
+use App\Http\Resources\Admin\CityResource;
+use App\Models\City;
 use App\Http\Requests\Admin\CountryRequest;
 use App\Http\Resources\Admin\CountryResource;
 use App\Models\Country;
@@ -10,19 +13,28 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 
-class CountryController extends Controller
+class CityController extends Controller
 {
     /**
      * @OA\Get(
-     *      path="/api/v1/admin/country",
-     *      operationId="getCountriesList",
-     *      tags={"Countries"},
-     *      summary="Get list of countries",
-     *      description="Returns list of countries",
+     *      path="/api/v1/admin/country/{id}/city",
+     *      operationId="getCitiesList",
+     *      tags={"Cities"},
+     *      summary="Get list of cities",
+     *      description="Returns list of cities",
+     *     @OA\Parameter(
+     *          name="id",
+     *          description="Country id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *          @OA\JsonContent(ref="#/components/schemas/CountryResource")
+     *          @OA\JsonContent(ref="#/components/schemas/CityResource")
      *       ),
      *      @OA\Response(
      *          response=401,
@@ -34,27 +46,38 @@ class CountryController extends Controller
      *      )
      *     )
      */
-    public function index()
+    public function index(int $id)
     {
-        return new CountryResource(Country::all());
+        /** @var Country $country */
+        $country = Country::find($id);
+        return new CityResource($country->cities);
     }
 
 
     /**
      * @OA\Post(
-     *      path="/api/v1/admin/country",
-     *      operationId="storeCountry",
-     *      tags={"Countries"},
+     *      path="/api/v1/admin/country/{id}/city",
+     *      operationId="storeCity",
+     *      tags={"Cities"},
      *      summary="Store new country",
      *      description="Returns country data",
+     *     @OA\Parameter(
+     *          name="id",
+     *          description="Country id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
      *      @OA\RequestBody(
      *          required=true,
-     *          @OA\JsonContent(ref="#/components/schemas/CountryRequest")
+     *          @OA\JsonContent(ref="#/components/schemas/CityRequest")
      *      ),
      *      @OA\Response(
      *          response=201,
      *          description="Successful operation",
-     *          @OA\JsonContent(ref="#/components/schemas/Country")
+     *          @OA\JsonContent(ref="#/components/schemas/City")
      *       ),
      *      @OA\Response(
      *          response=400,
@@ -70,14 +93,16 @@ class CountryController extends Controller
      *      )
      * )
      *
-     * @param CountryRequest $request
+     * @param CityRequest $request
+     * @param int  $id
      * @return JsonResponse
      */
-    public function store(CountryRequest $request)
+    public function store(CityRequest $request, int $id)
     {
-        $country = Country::create($request->all());
+        $country = Country::find($id);
+        $city = $country->cities()->create($request->all());
 
-        return (new CountryResource($country))
+        return (new CityResource($city))
             ->response()
             ->setStatusCode(Response::HTTP_CREATED);
     }
@@ -85,14 +110,23 @@ class CountryController extends Controller
 
     /**
      * @OA\Get(
-     *      path="/api/v1/admin/country/{id}",
-     *      operationId="getCountryById",
-     *      tags={"Countries"},
+     *      path="/api/v1/admin/country/{countryId}/city/{id}",
+     *      operationId="getCityById",
+     *      tags={"Cities"},
      *      summary="Get country information",
      *      description="Returns country data",
+     *     @OA\Parameter(
+     *          name="countryId",
+     *          description="Country id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
      *      @OA\Parameter(
      *          name="id",
-     *          description="Country id",
+     *          description="City id",
      *          required=true,
      *          in="path",
      *          @OA\Schema(
@@ -102,7 +136,7 @@ class CountryController extends Controller
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *          @OA\JsonContent(ref="#/components/schemas/Country")
+     *          @OA\JsonContent(ref="#/components/schemas/City")
      *       ),
      *      @OA\Response(
      *          response=400,
@@ -119,25 +153,35 @@ class CountryController extends Controller
      * )
      *
      * @param int $id
+     * @param int $countryId
      * @return CountryResource
      */
-    public function show( int $id)
+    public function show(int $countryId, int $id)
     {
-        $country = Country::find($id);
-        return new CountryResource($country);
+        $city = City::where('id', $id)->first();
+        return new CityResource($city);
     }
 
 
     /**
      * @OA\Put(
-     *      path="/api/v1/admin/country/{id}",
-     *      operationId="updateCountry",
-     *      tags={"Countries"},
+     *      path="/api/v1/admin/country/{countryId}/city/{id}",
+     *      operationId="updateCity",
+     *      tags={"Cities"},
      *      summary="Update existing country",
      *      description="Returns updated country data",
      *      @OA\Parameter(
-     *          name="id",
+     *          name="countryId",
      *          description="Country id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *     @OA\Parameter(
+     *          name="id",
+     *          description="city id",
      *          required=true,
      *          in="path",
      *          @OA\Schema(
@@ -146,12 +190,12 @@ class CountryController extends Controller
      *      ),
      *      @OA\RequestBody(
      *          required=true,
-     *          @OA\JsonContent(ref="#/components/schemas/CountryRequest")
+     *          @OA\JsonContent(ref="#/components/schemas/CityRequest")
      *      ),
      *      @OA\Response(
      *          response=202,
      *          description="Successful operation",
-     *          @OA\JsonContent(ref="#/components/schemas/Country")
+     *          @OA\JsonContent(ref="#/components/schemas/City")
      *       ),
      *      @OA\Response(
      *          response=400,
@@ -171,16 +215,17 @@ class CountryController extends Controller
      *      )
      * )
      *
-     * @param CountryRequest $request
+     * @param CityRequest $request
+     * @param int $countryId
      * @param int $id
      * @return JsonResponse
      */
-    public function update(CountryRequest $request, int $id)
+    public function update(CityRequest $request, int $countryId, int $id)
     {
-        $country = Country::find($id);
-        $country->update($request->all());
+        $city = City::find($id);
+        $city->update($request->all());
 
-        return (new CountryResource($country))
+        return (new CityResource($city))
             ->response()
             ->setStatusCode(Response::HTTP_ACCEPTED);
     }
@@ -188,14 +233,23 @@ class CountryController extends Controller
 
     /**
      * @OA\Delete(
-     *      path="/api/v1/admin/country/{id}",
-     *      operationId="deleteCountry",
-     *      tags={"Countries"},
+     *      path="/api/v1/admin/country/{countryId}/city/{id}",
+     *      operationId="deleteCity",
+     *      tags={"Cities"},
      *      summary="Delete existing country",
      *      description="Deletes a record and returns no content",
      *      @OA\Parameter(
-     *          name="id",
+     *          name="countryId",
      *          description="Country id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *     @OA\Parameter(
+     *          name="id",
+     *          description="City id",
      *          required=true,
      *          in="path",
      *          @OA\Schema(
@@ -221,15 +275,16 @@ class CountryController extends Controller
      *      )
      * )
      *
+     * @param int $countryId
      * @param int $id
      * @return JsonResponse
      */
-    public function destroy(int $id)
+    public function destroy(int $countryId, int $id)
     {
-        $country = Country::find($id);
-        $country->update(['status'  => 'I']);
+        $city = City::find($id);
+        $city->update(['status'  => 'I']);
 
-        return (new CountryResource($country))
+        return (new CityResource($city))
             ->response()
             ->setStatusCode(Response::HTTP_ACCEPTED);
     }

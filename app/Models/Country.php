@@ -33,7 +33,7 @@ class Country extends Model
      *
      * @return HasMany
      */
-    public function comments(): HasMany
+    public function cities(): HasMany
     {
         return $this->hasMany(City::class);
     }
