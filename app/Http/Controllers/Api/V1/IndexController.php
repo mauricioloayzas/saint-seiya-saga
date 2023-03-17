@@ -34,9 +34,9 @@ class IndexController extends Controller
                 'id' => 0,
                 'name'  => "test"
             ],
-            0 => [
+            1 => [
                 'id' => 1,
-                'name'  => "other test"
+                'name'  => "other test ".storage_path('app/public')
             ]
         ]);
     }
